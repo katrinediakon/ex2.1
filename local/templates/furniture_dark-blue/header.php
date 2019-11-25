@@ -137,7 +137,9 @@ $APPLICATION->IncludeComponent("bitrix:search.form", "flat", Array(
 ?>
 					</div>
 				</div>
-
+                <div style="color:red; margin: 34px 15px 35px 15px">
+                <?$APPLICATION->ShowProperty("MAX_MIN");?>
+                </div>
 				<div class="information-block">
 					<div class="top"></div>
 					<div class="information-block-inner">

@@ -29,16 +29,26 @@ if (intval($arParams["CAT_IBLOCK_ID"]) > 0 && intval($arParams["CLASSIFIER_IBLOC
         $res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize" => 50), $arSelect);
         while ($ob = $res->GetNext()) {
             foreach ($arResult['ITEM'] as $key => $value) {
+                if(empty($arResult['MIN']) && empty($arResult['MAX'])) {
+                    $arResult['MIN'] = $arResult['MAX'] = $ob['PROPERTY_PRICE_VALUE'];
+                }
+                elseif($arResult['MIN'] > $ob['PROPERTY_PRICE_VALUE']) {
+                    $arResult['MIN'] = $ob['PROPERTY_PRICE_VALUE'];
+                }
+                elseif($arResult['MAX'] < $ob['PROPERTY_PRICE_VALUE']) {
+                   $arResult['MAX'] = $ob['PROPERTY_PRICE_VALUE'];
+                }
                 if ($value["SECTION"][$ob['IBLOCK_SECTION_ID']]) {
                     $arResult['ITEM'][$key]['ELEM'][] = $ob;
                 }
             }
         }
         $arResult['COUNT'] = count($arResult['ITEM']);
-       $this->SetResultCacheKeys(array('COUNT'));
+       $this->SetResultCacheKeys(array('COUNT', 'MAX', 'MIN'));
         $this->includeComponentTemplate();
     }
     $APPLICATION->SetTitle(GetMessage("COUNT") . $arResult['COUNT']);
+    $APPLICATION->SetPageProperty("MAX_MIN", "Максимальная цена: ". $arResult['MAX'] . "</br>Минимальная цена: " . $arResult['MIN']);
 }
 
 ?>
